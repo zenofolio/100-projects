@@ -1,33 +1,38 @@
-import 'package:flutter/cupertino.dart';
-import 'package:remo/application/modules/connect/adapters/device_adapter.dart';
+import 'package:flutter/material.dart';
 
-void navigate(
-    BuildContext context,
-    String path, [
-      Map<String, dynamic> args = const {},
-    ]) {
-  Navigator.pushNamed(context, path, arguments: args.isEmpty ? null : args);
-}
-
-void goToDevicePage(
-    BuildContext context,
-    String route, {
-      required DeviceAdapter device,
-    }) =>
-    navigate(context, route, {"device": device});
-
-DeviceAdapter? extractDevice(
-    BuildContext ctx, {
-      String? fallback,
-    }) {
-  final args = ModalRoute.of(ctx)?.settings.arguments;
-  if (args is Map && args['device'] is DeviceAdapter) {
-    return args['device'] as DeviceAdapter;
+class Navigation {
+  static void navigate(
+      BuildContext context,
+      String path, [
+        Map<String, dynamic> args = const {},
+      ]) {
+    Navigator.pushNamed(context, path, arguments: args.isEmpty ? null : args);
   }
 
-  if (fallback != null) {
-    Navigator.pushReplacementNamed(ctx, fallback);
+  static T? argument<T>(BuildContext context, String key) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map && args[key] is T) {
+      return args[key] as T;
+    }
+    return null;
   }
 
-  return null;
+  static Widget requireArg<T>(
+      BuildContext context, {
+        required String key,
+        required String failback,
+        required Widget Function(T) builder,
+      }) {
+    final data = argument<T>(context, key);
+    if (data == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          Navigator.pushNamed(context, failback);
+        }
+      });
+      return const SizedBox.shrink();
+    }
+
+    return builder(data);
+  }
 }

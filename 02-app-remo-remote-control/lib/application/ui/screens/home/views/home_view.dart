@@ -18,16 +18,6 @@ class HomeView extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              scheme.primary,
-              scheme.primary.withValues(alpha: 0.6),
-            ],
-          ),
-        ),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,7 +52,7 @@ class HomeView extends StatelessWidget {
                   elevation: 3,
                 ),
                 onPressed: () {
-                  navigate(context, RoutePaths.discovery);
+                  Navigation.navigate(context, RoutePaths.discovery);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -42,8 +42,8 @@ class SwitchTap extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
         gradient: LinearGradient(
           colors: [
-            theme.colorScheme.onSurface.withValues(alpha: .9),
             theme.colorScheme.onSurface.withValues(alpha: .8),
+            theme.colorScheme.onSurface.withValues(alpha: .5),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

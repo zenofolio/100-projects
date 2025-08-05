@@ -1,3 +1,5 @@
+import 'package:remo/application/modules/connect/models/device_apps.dart';
+
 /// Base class for TV capabilities.
 /// Defines whether a feature is enabled, supported, and available.
 sealed class Capability {
@@ -19,23 +21,6 @@ sealed class Capability {
       'available': available,
     };
   }
-}
-
-/// Capability for remote control navigation (D-Pad)
-abstract class DirectionalPadCapability extends Capability {
-  const DirectionalPadCapability({
-    required super.enabled,
-    required super.supported,
-    required super.available,
-  });
-
-  Future<void> keyUp();
-
-  Future<void> keyDown();
-
-  Future<void> keyLeft();
-
-  Future<void> keyRight();
 }
 
 /// Capability for standard remote control operations
@@ -62,6 +47,7 @@ class RemoteControlCapability extends Capability {
     this.onLeft,
     this.onRight,
   });
+
 }
 
 /// Capability for volume control
@@ -95,30 +81,62 @@ class VolumeControlCapability extends Capability {
 
 /// Capability for power management (turning TV on/off)
 abstract class PowerManagementCapability extends Capability {
+
+  final Future<void> Function()? onPowerOn;
+  final Future<void> Function()? onPowerOff;
+
   const PowerManagementCapability({
     required super.enabled,
     required super.supported,
     required super.available,
+
+    this.onPowerOn,
+    this.onPowerOff,
   });
 
   Future<void> powerOn() async {
-    throw UnimplementedError('powerOn() is not implemented');
+    return onPowerOn?.call();
   }
 
   Future<void> powerOff() async {
-    throw UnimplementedError('powerOff() is not implemented');
+    return onPowerOff?.call();
   }
 }
 
 /// Capability for streaming apps (Netflix, YouTube, etc.)
-abstract class StreamingCapability extends Capability {
-  const StreamingCapability({
+abstract class DialCapability extends Capability {
+
+  final Future<void> Function(String appId)? onLaunchApp;
+  final Future<void> Function(String appId)? onCloseApp;
+  final Future<List<DeviceApp>> Function()? onGetInstalledApps;
+  final Future<void> Function(String appId)? onInstallApp;
+
+
+  const DialCapability({
     required super.enabled,
     required super.supported,
     required super.available,
+
+    this.onLaunchApp,
+    this.onCloseApp,
+    this.onGetInstalledApps,
+    this.onInstallApp,
   });
 
   Future<void> launchApp(String appId) async {
-    throw UnimplementedError('launchApp() is not implemented');
+    return onLaunchApp?.call(appId);
   }
+  Future<void> closeApp(String appId) async {
+    return onCloseApp?.call(appId);
+  }
+
+  Future<List<DeviceApp>> getInstalledApps() async {
+    return onGetInstalledApps?.call() ?? [];
+  }
+
+  Future<void> installApp(String appId) async {
+    return onInstallApp?.call(appId);
+  }
+
+
 }

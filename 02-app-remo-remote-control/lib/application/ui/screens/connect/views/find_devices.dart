@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:remo/application/common/constants/arguments.dart';
 import 'package:remo/application/common/helpers/navigate.dart';
-import 'package:remo/application/modules/connect/adapters/device_adapter.dart';
+import 'package:remo/application/di/app_scope.dart';
 import 'package:remo/application/modules/connect/connect.dart';
+import 'package:remo/application/modules/connect/models/device_adapter.dart';
 import 'package:remo/application/navigation/route_paths.dart';
 import 'package:remo/application/ui/screens/connect/components/device_component.dart';
 
@@ -18,19 +20,17 @@ class FindDevicesView extends StatefulWidget {
 }
 
 class _FindDevicesView extends State<FindDevicesView> {
-  final connector = Connect.instance();
-
   bool isLoading = true;
+  final connector = AppScope.get<Connect>();
 
   DeviceAdapter? currentDevice;
   List<DeviceAdapter> adapters = [];
   StreamSubscription<List<DeviceAdapter>>? sub;
 
   void prepare() async {
-    await connector.init();
+    await connector.discover();
 
-    sub = connector.tvStream.listen((devices) {
-      print("Devices $devices");
+    sub = connector.devicesStream.listen((devices) {
       if (devices.isEmpty) return;
       setState(() {
         isLoading = false;
@@ -42,7 +42,7 @@ class _FindDevicesView extends State<FindDevicesView> {
   @override
   void dispose() {
     sub?.cancel();
-    connector.dispose();
+    connector.stop();
     super.dispose();
   }
 
@@ -52,22 +52,23 @@ class _FindDevicesView extends State<FindDevicesView> {
     super.initState();
   }
 
-  Widget _content() {
-
-    if(currentDevice != null) {
-      return DeviceComponent(device: currentDevice!);
+  Widget _content(List<DeviceAdapter>? devices) {
+    if (devices == null || devices.isEmpty) {
+      return DiscoveringLoading(
+        onBack: () {
+          Navigation.navigate(context, RoutePaths.home);
+        },
+      );
     }
 
-
-    if (isLoading || adapters.isEmpty) {
-      return DiscoveringLoading(onBack: () {
-
-      });
-    }
-
-    return DevicesList(list: adapters, onPress: (device){
-       goToDevicePage(context, RoutePaths.device, device: device);
-    });
+    return DevicesList(
+      list: devices,
+      onPress: (device) {
+        Navigation.navigate(context, RoutePaths.device, {
+          ArgsConstants.device: device,
+        });
+      },
+    );
   }
 
   @override
@@ -75,81 +76,76 @@ class _FindDevicesView extends State<FindDevicesView> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.colorScheme.primary.withValues(
-                alpha: .4
-              ),
-              theme.colorScheme.primary,
-            ],
-          )
-        ),
-        child: Flex(
-          direction: Axis.vertical,
-          children: [
-            AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Text("Devices Discover", style: theme.textTheme.titleMedium),
-              centerTitle: true,
+      body: Flex(
+        direction: Axis.vertical,
+        children: [
+          AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text(
+              "Devices Discover",
+              style: theme.textTheme.titleMedium,
             ),
-            Flexible(child: _content()),
-            Container(
-
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              child: Column(
-                spacing: 10,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      "Have problem to find device?",
-                      style: theme.textTheme.titleMedium
-                  ),
-                  Column(
-                    spacing: 10,
-                    children: [
-                      ListTile(
-                        visualDensity: VisualDensity.compact,
-                        tileColor: theme.colorScheme.secondary,
-                        style: ListTileStyle.drawer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-
-                        enabled: true,
-
-                        title: Text(
-                          "Enter address manually",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        trailing: Icon(Icons.arrow_forward_rounded),
-                      ),
-                      ListTile(
-                        visualDensity: VisualDensity.compact,
-                        tileColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-
-                        enabled: true,
-
-                        title: Text(
-                          "Scan QR Code",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        trailing: Icon(Icons.arrow_forward_rounded),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            centerTitle: true,
+          ),
+          Flexible(
+            child: StreamBuilder(
+              stream: connector.devicesStream,
+              builder: (context, snapshot) {
+                 return _content(snapshot.data);
+              },
             ),
-          ],
-        ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Column(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Have problem to find device?",
+                  style: theme.textTheme.titleMedium,
+                ),
+                Column(
+                  spacing: 10,
+                  children: [
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      tileColor: theme.colorScheme.primary,
+                      style: ListTileStyle.drawer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+
+                      enabled: true,
+
+                      title: Text(
+                        "Enter address manually",
+                        style: TextStyle(fontWeight: FontWeight.w600, color: theme.colorScheme.onPrimary),
+                      ),
+                      trailing: Icon(Icons.arrow_forward_rounded),
+                    ),
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      tileColor: theme.colorScheme.onSurface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+
+                      enabled: true,
+
+                      title: Text(
+                        "Scan QR Code",
+                        style: TextStyle(fontWeight: FontWeight.w600, color: theme.colorScheme.surface),
+                      ),
+                      trailing: Icon(Icons.arrow_forward_rounded),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

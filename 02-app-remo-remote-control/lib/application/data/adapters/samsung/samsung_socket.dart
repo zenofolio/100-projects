@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:remo/application/modules/connect/adapters/samsung/models.dart';
 import 'package:remo/application/modules/connect/models/device_status.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:remo/application/common/constants/app.dart';
-import 'package:remo/application/modules/connect/adapters/samsung/samsung.dart';
 import 'package:web_socket_channel/status.dart' as wsStatus;
- 
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'constants.dart';
+import 'models.dart';
+import 'samsung.dart';
+
 class SamsungSocket {
   ///////////////////////////
   /// Fields & State
@@ -36,34 +40,49 @@ class SamsungSocket {
   ///////////////////////////
 
   DeviceStatus get status => _status;
+
   bool get isConnected => _status == DeviceStatus.connected;
+
   Stream<DeviceStatus> get statusStream => _statusController.stream;
 
   ///////////////////////////
   /// Public Methods
   ///////////////////////////
 
+  /// Create socket connection with samsung api
   Future<String?> connect({int retries = 3}) async {
-    if (_status == DeviceStatus.connected) return _token;
+    if (_status == DeviceStatus.connected &&
+        _token?.isNotEmpty == true &&
+        _channel != null) {
+      return _token;
+    }
+
+    final ip = _adapter.ipAddress;
+    if (ip == null) {
+      _updateStatus(DeviceStatus.error);
+      throw Exception("Device IP address is missing.");
+    }
 
     _updateStatus(DeviceStatus.connecting);
 
-    _token ??= await _adapter.loadData("token");
+    _token ??= await _getToken();
 
     for (int attempt = 1; attempt <= retries; attempt++) {
       try {
-        final result = await _prepareSocket(_adapter.ipAddress!, _token);
-        _channel = result.value;
-        _token = result.key;
+        final result = await _prepareSocket(ip, _token);
+        final newToken = result.key;
+        final newChannel = result.value;
 
+        if (newToken.isNotEmpty) {
+          _token = newToken;
+          _channel = newChannel;
 
-        if(result.key.isNotEmpty) {
-          await _adapter.saveData("token", result.key);
+          await _saveToken(newToken);
           _updateStatus(DeviceStatus.connected);
-        }
 
-        _listenToSocketOnce();
-        return result.key.isNotEmpty ? result.key : null;
+          _listenToSocketOnce();
+          return newToken;
+        }
       } catch (e) {
         if (attempt == retries) {
           _updateStatus(DeviceStatus.error);
@@ -76,8 +95,20 @@ class SamsungSocket {
     return null;
   }
 
+  /// Disconnect device an delete saved data
   Future<void> disconnect() async {
-    await _channel?.sink.close(wsStatus.goingAway);
+    await Future.wait([_closeConnection(), _removeToken()]);
+
+    _token = null;
+
+    _updateStatus(DeviceStatus.disconnected);
+  }
+
+  /// Close connection, but keep saved data
+  void dispose() {
+    _closeConnection();
+    _token = null;
+
     _updateStatus(DeviceStatus.disconnected);
   }
 
@@ -99,13 +130,31 @@ class SamsungSocket {
     );
   }
 
-  void dispose() {
-    _statusController.close();
-  }
-
   ///////////////////////////
   /// Internal Methods
   ///////////////////////////
+
+  Future<String?> _getToken() async {
+    var preferences = await SharedPreferences.getInstance();
+    return preferences.getString(SamsungSocketConstants.token) ?? '';
+  }
+
+  Future<void> _saveToken(String token) async {
+    var preferences = await SharedPreferences.getInstance();
+    await preferences.setString(SamsungSocketConstants.token, token);
+  }
+
+  Future<void> _removeToken() async {
+    var preferences = await SharedPreferences.getInstance();
+    await preferences.remove(SamsungSocketConstants.token);
+  }
+
+  Future<void> _closeConnection() async {
+    try {
+      await _channel?.sink.close(wsStatus.goingAway);
+      _channel = null;
+    } catch (_) {}
+  }
 
   void _listenToSocketOnce() {
     if (_isListening || _channel == null) return;
@@ -162,7 +211,6 @@ class SamsungSocket {
       StreamSubscription? sub;
       sub = channel.stream.listen(
         (msg) {
-
           final message = SamsungSocketMessage.fromString(msg.toString());
           switch (message) {
             case SamsungSocketMessageAuth():
@@ -174,7 +222,6 @@ class SamsungSocket {
               completer.completeError(Exception("Timeout"));
               return;
           }
-          completer.completeError(Exception("Unexpected message"));
         },
         onDone: () {
           completer.completeError(Exception("Socket closed before ready"));

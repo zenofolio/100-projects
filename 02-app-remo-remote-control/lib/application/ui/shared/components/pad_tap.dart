@@ -50,11 +50,18 @@ class _PadTapState extends State<PadTap> {
 
     return Center(
       child: Container(
-        width: 250,
-        height: 250,
+        width: 300,
+        height: 300,
         decoration: BoxDecoration(
-          color: theme.cardColor.withValues( alpha: .3),
           borderRadius: BorderRadius.circular(300),
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.surface,
+              theme.colorScheme.surface.withValues(alpha: .5),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomCenter,
+          )
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -67,22 +74,39 @@ class _PadTapState extends State<PadTap> {
                   padding: EdgeInsets.all(constraints.maxWidth * .01),
                   child: Stack(
                     children: [
-                      _icon(
-                        _iconSize,
-                        Icons.circle_rounded,
-                        Alignment.center,
-                        color,
-                        widget.enter,
-                        IconButton.styleFrom(
-                          padding: EdgeInsets.all(30),
-                          shape: RoundedRectangleBorder(
-                             side: BorderSide(
-                               width: 1,
-                               color: theme.scaffoldBackgroundColor
-                             ),
-                            borderRadius: BorderRadius.circular(100)
-                          )
-                        )
+                      Center(
+                        child: Container(
+                          width: constraints.maxWidth * .45,
+                          height: constraints.maxWidth * .45,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(300),
+                              border: Border.all(
+                                color: theme.scaffoldBackgroundColor,
+                                width: 1
+                              ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  theme.scaffoldBackgroundColor,
+                                  theme.colorScheme.surface.withValues(alpha: .3),
+                                ],
+                                begin: Alignment.topRight,
+                                end: Alignment.bottomLeft,
+                              )
+                          ),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(100),
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                              onTap: () => widget.enter?.call(),
+                              child: Center(
+                                child: Text("OK", style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: constraints.maxWidth * .07,
+                                    color: theme.highlightColor
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       _icon(
                         _iconSize,

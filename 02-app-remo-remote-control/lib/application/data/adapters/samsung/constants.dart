@@ -55,3 +55,6 @@ class SamsungKeyConstants {
 }
 
 
+class SamsungSocketConstants {
+  static const String token = "token";
+}

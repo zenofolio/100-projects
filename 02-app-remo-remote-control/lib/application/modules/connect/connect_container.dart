@@ -1,4 +1,3 @@
-import 'package:dlna_dart/dlna.dart';
 
 typedef AdapterFactory<T, I> = T? Function(String id, I device);
 
@@ -12,8 +11,12 @@ class ConnectContainer<T, I> {
     _factories.add(factory);
   }
 
-  void setValue(List<AdapterFactory<T, I>> factories){
+  void setRegistry(List<AdapterFactory<T, I>> factories){
     _factories.clear();
+    _factories.addAll(factories);
+  }
+
+  void addRegistry(List<AdapterFactory<T, I>> factories){
     _factories.addAll(factories);
   }
 

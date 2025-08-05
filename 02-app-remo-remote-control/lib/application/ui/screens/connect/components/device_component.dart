@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:remo/application/modules/connect/adapters/device_adapter.dart';
+import 'package:remo/application/modules/connect/models/device_adapter.dart';
 import 'package:remo/application/ui/shared/layouts/RemoteControlLayout.dart';
 
 class DeviceComponent extends StatelessWidget {
