@@ -22,24 +22,6 @@ Remo Remote Control is a modular Flutter application designed to control a wide 
 - **WebSocket** (for device communication)
 - **Custom Adapter Pattern** (for device extensibility)
 
----
-
-## About .ai-context (zenozaga/contextops)
-
-This project uses the `.ai-context` folder structure inspired by [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops). This approach provides structured, machine-readable context for AI agents and developers, including:
-
-- **Rules** for code style, error handling, and project conventions
-- **Goals** and step-by-step tasks for automation and onboarding
-- **Knowledge base** for technical notes and protocol documentation
-- **API references** and templates for scaffolding code and tests
-
-### Advantages of Using .ai-context
-- **Consistency:** Ensures all contributors and AI agents follow the same standards and patterns.
-- **Productivity:** Reduces onboarding time and enables rapid, automated scaffolding and refactoring.
-- **Documentation:** Centralizes project knowledge, making it easy to maintain and evolve.
-- **AI-Ready:** Enables advanced code generation, refactoring, and documentation by providing clear, structured context.
-
-For more details, see the `.ai-context/` folder in this repository.
 
 ---
 
@@ -133,10 +115,28 @@ lib/
 
 ---
 
+## About .ai-context (zenozaga/contextops)
+
+This project uses the `.ai-context` folder structure inspired by [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops). This approach provides structured, machine-readable context for AI agents and developers, including:
+
+- **Rules** for code style, error handling, and project conventions
+- **Goals** and step-by-step tasks for automation and onboarding
+- **Knowledge base** for technical notes and protocol documentation
+- **API references** and templates for scaffolding code and tests
+
+### Advantages of Using .ai-context
+- **Consistency:** Ensures all contributors and AI agents follow the same standards and patterns.
+- **Productivity:** Reduces onboarding time and enables rapid, automated scaffolding and refactoring.
+- **Documentation:** Centralizes project knowledge, making it easy to maintain and evolve.
+- **AI-Ready:** Enables advanced code generation, refactoring, and documentation by providing clear, structured context.
+
+For more information about the .ai-context standard and its benefits, see the official documentation: [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops)
+
+---
+
 ## Contributing
 - The project is designed for clarity, extensibility, and real-world maintainability.
 - Follows modern Flutter/Dart best practices.
 - Open to contributions and feedback.
 
-For more information about the .ai-context standard and its benefits, see the official documentation: [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops)
 
