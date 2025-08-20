@@ -46,7 +46,7 @@ For more details, see the `.ai-context/` folder in this repository.
 ## Demo / Screenshots
 Below are screenshots of the app in action:
 
-| ![App Screenshot 1](captures/1.png) | ![App Screenshot 2](captures/2.png) | ![App Screenshot 3](captures/3.png) |
+| ![App Screenshot 1](captures/1.png) | ![App Screenshot 2](captures/2.png) | ![App Screenshot 5](captures/5.png) |
 |-------------------------------------|-------------------------------------|-------------------------------------|
 ---
 
