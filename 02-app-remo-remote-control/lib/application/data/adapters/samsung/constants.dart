@@ -1,5 +1,3 @@
-import 'package:remo/application/common/constants/remote_control.dart';
-
 class SamsungKeyConstants {
   static const String power = 'KEY_POWEROFF';
   static const String volumeUp = 'KEY_VOLUP';
@@ -53,7 +51,6 @@ class SamsungKeyConstants {
 
   static const String subtitle = 'KEY_CAPTION';
 }
-
 
 class SamsungSocketConstants {
   static const String token = "token";

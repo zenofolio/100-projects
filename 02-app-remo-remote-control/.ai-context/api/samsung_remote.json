@@ -1,0 +1,21 @@
+{
+  "description": "Samsung Smart TV WebSocket Remote Control Protocol (2016+)",
+  "connection": {
+    "host": "<TV_IP>",
+    "port": 8001,
+    "protocol": "websocket"
+  },
+  "message_format": {
+    "method": "ms.remote.control",
+    "params": {
+      "Cmd": "Click",
+      "DataOfCmd": "<KEY_CODE>",
+      "Option": "false",
+      "TypeOfRemote": "SendRemoteKey"
+    }
+  },
+  "key_codes": [
+    "KEY_POWEROFF", "KEY_UP", "KEY_DOWN", "KEY_LEFT", "KEY_RIGHT", "KEY_ENTER", "KEY_RETURN", "KEY_MENU", "KEY_SOURCE", "KEY_GUIDE", "KEY_TOOLS", "KEY_INFO", "KEY_RED", "KEY_GREEN", "KEY_YELLOW", "KEY_BLUE", "KEY_VOLUP", "KEY_VOLDOWN", "KEY_MUTE", "KEY_0", "KEY_1", "KEY_2", "KEY_3", "KEY_4", "KEY_5", "KEY_6", "KEY_7", "KEY_8", "KEY_9"
+  ],
+  "notes": "Some key codes may differ by TV model/year. Authentication or pairing may be required on first connection. See samsungctl and sc0ty.pl for more details."
+}
