@@ -48,6 +48,8 @@ Below are screenshots of the app in action:
 
 | ![App Screenshot 1](captures/1.png) | ![App Screenshot 2](captures/2.png) | ![App Screenshot 5](captures/5.png) |
 |-------------------------------------|-------------------------------------|-------------------------------------|
+
+See all screenshots in [captures/README.md](captures/README.md)
 ---
 
 ## Getting Started
