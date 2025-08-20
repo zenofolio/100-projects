@@ -1,16 +1,19 @@
 
-# Remo Remote Control
 
-Remo Remote Control is a modular Flutter application designed to control a wide variety of smart TVs and devices from a single, unified interface. The project is built for extensibility, maintainability, and ease of integration with new device types.
+# Remo Remote Control – Flutter Smart TV & Device Remote App
+
+**Remo Remote Control** is a modern, modular Flutter application for controlling smart TVs and IoT devices (Samsung, LG, and more) from your phone or tablet. Built for extensibility, maintainability, and real-world use, it’s ideal for portfolios, job applications, and as a reference for scalable Flutter architecture.
+
+**Keywords:** Flutter, Smart TV, Remote Control, IoT, Samsung, LG, Adapter Pattern, Dependency Injection, Modular Architecture, Open Source, Portfolio
 
 ---
 
 ## Features
 - Modular architecture for easy extension and maintenance
-- Adapter pattern for supporting multiple TV brands (e.g., Samsung, Mock)
-- Device discovery and connection management
-- Responsive and accessible UI
-- Dependency injection for scalable state and service management
+- Adapter pattern for supporting multiple TV brands (Samsung, Mock, LG, etc.)
+- Device discovery (DLNA) and connection management
+- Responsive, accessible, and mobile-friendly UI
+- Custom dependency injection (AppScope) for scalable state and service management
 - Testable and well-documented codebase
 
 ---
@@ -18,35 +21,41 @@ Remo Remote Control is a modular Flutter application designed to control a wide 
 ## Tech Stack
 - **Flutter** (UI framework)
 - **Dart** (language)
-- **Custom Dependency Injector (AppScope)** — demonstrates understanding of DI patterns
+- **Custom Dependency Injector (AppScope)**
 - **WebSocket** (for device communication)
+- **DLNA** (for device discovery and communication)
 - **Custom Adapter Pattern** (for device extensibility)
 
 
 ---
 
-## Demo / Screenshots
-Below are screenshots of the app in action:
+## Demo & Screenshots
+See the app in action:
 
-| ![App Screenshot 1](captures/1.png) | ![App Screenshot 2](captures/2.png) | ![App Screenshot 5](captures/5.png) |
-|-------------------------------------|-------------------------------------|-------------------------------------|
+| ![Smart TV Remote Home](captures/1.png) | ![Device Discovery](captures/2.png) | ![Device Control](captures/5.png) |
+|-----------------------------------------|------------------------------------|------------------------------------|
 
-See all screenshots in [captures/README.md](captures/README.md)
+[See all screenshots](captures/README.md)
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Flutter SDK (see [Flutter installation guide](https://docs.flutter.dev/get-started/install))
+- [Flutter SDK](https://docs.flutter.dev/get-started/install)
 - Dart SDK (included with Flutter)
 
-### Setup
-1. Clone this repository.
-2. Run `flutter pub get` to install dependencies.
-3. Run `flutter run` to launch the app on your device or emulator.
+### Quick Start
+```sh
+git clone <this-repo-url>
+cd <project-folder>
+flutter pub get
+flutter run
+```
 
-### Testing
-- Run `flutter test` to execute all unit and widget tests.
+### Run Tests
+```sh
+flutter test
+```
 
 ---
 
@@ -67,8 +76,7 @@ lib/
 
 ### Dependency Injection: AppScope
 - Located in `lib/application/di/app_scope.dart`.
-- Centralizes the creation and management of app-wide dependencies (services, stores, etc.).
-- Promotes testability and loose coupling between modules.
+- Centralizes and manages app-wide dependencies (services, stores, etc.) for testability and loose coupling.
 
 ### Connect Module
 - Located in `lib/application/modules/connect/`.
@@ -93,7 +101,7 @@ lib/
 3. Add capabilities using provided mixins and capability classes.
 4. Update the connect module to recognize and use the new adapter.
 5. Add or update UI screens as needed.
-6. Document the adapter in `.ai-context/`.
+6. Document the adapter in `.ai-context/` for future contributors and AI agents.
 
 ---
 
@@ -117,20 +125,7 @@ lib/
 
 ## About .ai-context (zenozaga/contextops)
 
-This project uses the `.ai-context` folder structure inspired by [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops). This approach provides structured, machine-readable context for AI agents and developers, including:
-
-- **Rules** for code style, error handling, and project conventions
-- **Goals** and step-by-step tasks for automation and onboarding
-- **Knowledge base** for technical notes and protocol documentation
-- **API references** and templates for scaffolding code and tests
-
-### Advantages of Using .ai-context
-- **Consistency:** Ensures all contributors and AI agents follow the same standards and patterns.
-- **Productivity:** Reduces onboarding time and enables rapid, automated scaffolding and refactoring.
-- **Documentation:** Centralizes project knowledge, making it easy to maintain and evolve.
-- **AI-Ready:** Enables advanced code generation, refactoring, and documentation by providing clear, structured context.
-
-For more information about the .ai-context standard and its benefits, see the official documentation: [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops)
+This project uses the `.ai-context` folder structure inspired by [zenozaga/contextops](https://github.com/zenozaga/zeno-contextops). Learn more about the standard and its benefits in the [official documentation](https://github.com/zenozaga/zeno-contextops).
 
 ---
 
